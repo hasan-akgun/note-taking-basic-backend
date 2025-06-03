@@ -1,4 +1,4 @@
-const {ObjectId} = require("mongodb")
+const { ObjectId } = require("mongodb")
 const { connectDatabase, closeDatabase } = require('../config/databaseConfig');
 
 const createNewNote = async (req, res) => {
@@ -22,7 +22,7 @@ const createNewNote = async (req, res) => {
       success: false,
       message: "Error creating note"
     });
-  }finally{
+  } finally {
     await closeDatabase();
   }
 
@@ -49,10 +49,10 @@ const deleteNote = async (req, res) => {
       success: false,
       message: "Couldnt delete"
     })
-  } finally{
+  } finally {
     await closeDatabase();
   }
-  
+
 }
 
 const readNote = async (req, res) => {
@@ -72,11 +72,44 @@ const readNote = async (req, res) => {
       success: false,
       message: "Couldnt read"
     })
-  } finally{
+  } finally {
     await closeDatabase();
   }
-  
-  
+
+
 }
 
-module.exports = {createNewNote, deleteNote, readNote}
+const updateNote = async (req, res) => {
+  const { title, note } = req.body;
+  const _id = req.body._id.$oid;
+  
+  try {
+    const notesCollection = await connectDatabase();
+
+    await notesCollection.updateOne(
+      { _id: new ObjectId(_id) },
+
+      {
+        $set: { title: title, note: note },
+        $currentDate: { lastModified: true }
+      }
+    );
+
+    res.status(201).json({
+      success: true,
+      message: "Note updated"
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      success: true,
+      message: "Couldnt update"
+    })
+  } finally {
+    await closeDatabase();
+  }
+
+
+}
+
+module.exports = { createNewNote, deleteNote, readNote, updateNote }
