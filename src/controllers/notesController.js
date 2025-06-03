@@ -1,3 +1,4 @@
+const {ObjectId} = require("mongodb")
 const { connectDatabase, closeDatabase } = require('../config/databaseConfig');
 
 const createNewNote = async (req, res) => {
@@ -27,4 +28,31 @@ const createNewNote = async (req, res) => {
 
 }
 
-module.exports = {createNewNote}
+const deleteNote = async (req, res) => {
+  const _id = req.body._id.$oid
+
+
+  try {
+    const notesCollection = await connectDatabase();
+
+    await notesCollection.deleteOne({
+      _id: new ObjectId(_id)
+    })
+
+    res.status(201).json({
+      success: true,
+      message: "Note deleted"
+    })
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Couldnt delete"
+    })
+  } finally{
+    await closeDatabase();
+  }
+  
+}
+
+module.exports = {createNewNote, deleteNote}
