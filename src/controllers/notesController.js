@@ -29,7 +29,7 @@ const createNewNote = async (req, res) => {
 }
 
 const deleteNote = async (req, res) => {
-  const _id = req.body._id.$oid
+  const {_id} = req.body
 
 
   try {
@@ -55,12 +55,11 @@ const deleteNote = async (req, res) => {
 
 }
 
-const readNote = async (req, res) => {
+const readAllNotes = async (req, res) => {
   try {
     notesCollection = await connectDatabase();
 
     const allNotes = await notesCollection.find({}).toArray();
-    console.log(allNotes)
 
     res.status(201).json({
       success: true,
@@ -79,9 +78,34 @@ const readNote = async (req, res) => {
 
 }
 
+const readNoteId = async (req, res) => {
+  const _id = req.params.id;
+
+  try {
+    const notesCollection = await connectDatabase();
+
+    const note = await notesCollection.find({
+      _id: new ObjectId(_id)
+    }).toArray();
+
+    res.status(201).json({
+      success: true,
+      note: note
+    })
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Couldnt find"
+    })
+  } finally {
+    await closeDatabase();
+  }
+}
+
 const updateNote = async (req, res) => {
   const { title, note } = req.body;
-  const _id = req.body._id.$oid;
+  const {_id} = req.body;
   
   try {
     const notesCollection = await connectDatabase();
@@ -112,4 +136,4 @@ const updateNote = async (req, res) => {
 
 }
 
-module.exports = { createNewNote, deleteNote, readNote, updateNote }
+module.exports = { createNewNote, deleteNote, readAllNotes, updateNote, readNoteId }
