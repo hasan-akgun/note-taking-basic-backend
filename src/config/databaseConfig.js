@@ -4,7 +4,7 @@ require("dotenv").config();
 const client = new MongoClient(process.env.DATABASE);
 
 const connectDatabase = async ()=>{
-  let notes;
+  let notesCollection;
 
   try {
     await client.connect();
@@ -12,7 +12,7 @@ const connectDatabase = async ()=>{
 
     console.log("Connected to DB")
 
-    return notes = db.collection('notes')
+    return notesCollection = db.collection('notes')
 
   } catch (error) {
     console.log("NOT Connected: " + error);
@@ -21,6 +21,7 @@ const connectDatabase = async ()=>{
 
 const closeDatabase = async ()=>{
   await client.close();
+  console.log("Closed DB connection");
 }
 
 module.exports = {connectDatabase, closeDatabase};
