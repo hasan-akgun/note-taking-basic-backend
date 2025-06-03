@@ -55,4 +55,28 @@ const deleteNote = async (req, res) => {
   
 }
 
-module.exports = {createNewNote, deleteNote}
+const readNote = async (req, res) => {
+  try {
+    notesCollection = await connectDatabase();
+
+    const allNotes = await notesCollection.find({}).toArray();
+    console.log(allNotes)
+
+    res.status(201).json({
+      success: true,
+      notes: allNotes
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      success: false,
+      message: "Couldnt read"
+    })
+  } finally{
+    await closeDatabase();
+  }
+  
+  
+}
+
+module.exports = {createNewNote, deleteNote, readNote}
