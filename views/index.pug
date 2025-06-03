@@ -1,0 +1,16 @@
+doctype html 
+link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel="stylesheet")
+
+h1.text-center Note Taking App
+
+div.container.my-5
+  div.row
+    div.col-md-3 
+      div.border.border-3.rounded y
+    div.col-md-6 
+      div.d-flex.flex-column
+        input.form-control(placeholder="Title")
+        textarea.form-control.my-3(title = "note", rows=20)
+    div.col-md-3 
+     button.btn.btn-primary Add New Note
+     button.btn.btn-info.mx-2 Save Note
